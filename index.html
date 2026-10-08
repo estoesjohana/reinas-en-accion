@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3E0111">
+<title>Reinas en Acción 👑</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vino:#3E0111; --vino2:#5A0A1E; --vino3:#2A000B;
+  --crema:#F6F0E3; --crema2:#EFE6D2;
+  --dorado:#C9A227; --dorado2:#E3BC3F;
+  --texto:#2b2b2b; --muted:#8a7f6a;
+  --ok:#3d8b5f; --rosa:#e8a0b4;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:linear-gradient(160deg,var(--vino3),var(--vino) 60%,var(--vino2));
+  color:var(--crema); min-height:100vh; padding-bottom:96px;
+}
+h1,h2,h3,.serif{font-family:'Playfair Display',Georgia,serif;}
+button{font-family:inherit;}
+
+/* ===== GATE ===== */
+#gate{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.gate-card{background:var(--crema);color:var(--vino);border-radius:24px;padding:36px 28px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.45);}
+.gate-card h1{font-size:30px;margin:0 0 6px;}
+.gate-card p{color:var(--muted);font-size:14px;margin:0 0 20px;}
+.gate-card input{width:100%;padding:14px 16px;border-radius:14px;border:2px solid var(--crema2);font-size:16px;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;background:#fff;}
+.gate-card input:focus{outline:none;border-color:var(--dorado);}
+.btn{display:block;width:100%;padding:15px;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;}
+.btn-gold{background:linear-gradient(135deg,var(--dorado),var(--dorado2));color:var(--vino3);}
+.btn-vino{background:var(--vino);color:var(--crema);}
+.btn:active{transform:scale(.98);}
+.gate-err{color:#b3261e;font-size:13px;min-height:20px;margin-top:10px;}
+
+/* ===== APP ===== */
+header.app-head{padding:26px 20px 10px;text-align:center;}
+header.app-head h1{font-size:26px;margin:0;}
+header.app-head h1 span{color:var(--dorado2);}
+header.app-head .sub{font-size:13px;opacity:.75;margin-top:4px;}
+main{padding:10px 16px 20px;max-width:520px;margin:0 auto;}
+.tab{display:none;animation:fade .25s ease;}
+.tab.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.card{background:var(--crema);color:var(--texto);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.card h3{margin:0 0 10px;color:var(--vino);font-size:19px;}
+.card .hint{font-size:13px;color:var(--muted);margin:0 0 12px;}
+
+.frase{background:linear-gradient(135deg,var(--vino2),var(--vino));border-radius:20px;padding:26px 22px;margin-bottom:14px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.3);border:1px solid rgba(201,162,39,.35);}
+.frase .lbl{font-size:11px;letter-spacing:3px;color:var(--dorado2);margin-bottom:10px;font-weight:600;}
+.frase p{font-family:'Playfair Display',serif;font-size:21px;font-style:italic;line-height:1.45;margin:0;color:var(--crema);}
+
+.stats{display:flex;gap:10px;margin-bottom:14px;}
+.stat{flex:1;background:rgba(246,240,227,.08);border:1px solid rgba(246,240,227,.15);border-radius:16px;padding:14px 8px;text-align:center;}
+.stat .n{font-size:24px;font-weight:800;color:var(--dorado2);}
+.stat .l{font-size:11px;opacity:.7;margin-top:2px;}
+
+/* moods */
+.moods{display:flex;gap:8px;justify-content:space-between;margin:6px 0 12px;}
+.mood{flex:1;background:#fff;border:2px solid var(--crema2);border-radius:14px;padding:10px 4px;text-align:center;cursor:pointer;font-size:11px;color:var(--muted);}
+.mood .e{font-size:26px;display:block;margin-bottom:4px;}
+.mood.sel{border-color:var(--dorado);background:#fff8e6;color:var(--vino);font-weight:600;}
+textarea,input[type=text],input[type=date]{width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--crema2);font-size:15px;font-family:inherit;background:#fff;color:var(--texto);margin-bottom:10px;}
+textarea:focus,input:focus{outline:none;border-color:var(--dorado);}
+
+/* habits */
+.habit{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:10px;border:2px solid transparent;}
+.habit .icon{font-size:24px;}
+.habit .info{flex:1;}
+.habit .info b{color:var(--vino);font-size:15px;display:block;}
+.habit .info small{color:var(--muted);}
+.check{width:40px;height:40px;border-radius:50%;border:2px solid var(--crema2);background:#fff;font-size:20px;cursor:pointer;flex-shrink:0;}
+.check.done{background:var(--ok);border-color:var(--ok);color:#fff;}
+.streak{background:var(--vino);color:var(--dorado2);font-size:12px;font-weight:700;border-radius:20px;padding:3px 10px;white-space:nowrap;}
+.del{background:none;border:none;color:#c9c2b2;font-size:18px;cursor:pointer;padding:4px;}
+
+/* metas */
+.meta{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;}
+.meta b{color:var(--vino);font-size:15px;}
+.meta small{color:var(--muted);display:block;margin:2px 0 8px;}
+.bar{height:10px;background:var(--crema2);border-radius:6px;overflow:hidden;margin:8px 0;}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--dorado),var(--dorado2));border-radius:6px;}
+.meta input[type=range]{width:100%;accent-color:var(--dorado);}
+.meta.done{opacity:.75;border:2px solid var(--ok);}
+
+/* retos */
+.reto{background:linear-gradient(135deg,var(--vino2),var(--vino));border-radius:16px;padding:18px;margin-bottom:12px;color:var(--crema);}
+.reto h4{margin:0 0 4px;font-family:'Playfair Display',serif;font-size:18px;color:var(--dorado2);}
+.reto p{font-size:13px;opacity:.8;margin:0 0 12px;}
+.reto .prog{font-size:13px;font-weight:600;margin-bottom:8px;}
+
+/* playlist */
+.play-wrap{border-radius:16px;overflow:hidden;background:#000;}
+.play-wrap iframe{width:100%;height:380px;border:none;display:block;}
+
+/* nav */
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(42,0,11,.96);backdrop-filter:blur(8px);display:flex;border-top:1px solid rgba(201,162,39,.3);padding:8px 4px calc(10px + env(safe-area-inset-bottom));z-index:50;}
+nav button{flex:1;background:none;border:none;color:rgba(246,240,227,.5);font-size:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;}
+nav button .ic{font-size:22px;}
+nav button.on{color:var(--dorado2);}
+
+.row{display:flex;gap:10px;}
+.row .btn{margin-bottom:10px;}
+.small{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;}
+.hist{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.hist .d{background:#fff;border-radius:10px;padding:8px 10px;font-size:12px;text-align:center;min-width:64px;}
+.hist .d b{display:block;font-size:16px;}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:18px 10px;}
+.hero{position:relative;border-radius:20px;overflow:hidden;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.hero img{width:100%;height:230px;object-fit:cover;object-position:top center;display:block;}
+.hero-txt{position:absolute;bottom:0;left:0;right:0;padding:48px 18px 16px;background:linear-gradient(transparent,rgba(42,0,11,.88));}
+.hero-txt h2{margin:0;font-size:25px;color:var(--crema);}
+.hero-txt p{margin:4px 0 0;font-size:13px;color:rgba(246,240,227,.85);}
+.banner{border-radius:16px;overflow:hidden;margin-bottom:14px;box-shadow:0 6px 18px rgba(0,0,0,.22);}
+.banner img{width:100%;height:132px;object-fit:cover;object-position:top center;display:block;}
+</style>
+</head>
+<body>
+
+<!-- ===== ACCESO ===== -->
+<div id="gate">
+  <div class="gate-card">
+    <h1>👑 Reinas en Acción</h1>
+    <p>Zona privada de Entre Nosotras Mujer Club.<br>Ingresa tu código de acceso.</p>
+    <input id="gateInput" type="text" placeholder="CÓDIGO" autocomplete="off">
+    <button class="btn btn-gold" onclick="tryGate()">Entrar</button>
+    <div class="gate-err" id="gateErr"></div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" style="display:none">
+  <header class="app-head">
+    <h1>Reinas <span>en Acción</span> 👑</h1>
+    <div class="sub" id="helloLine">Hola, reina</div>
+  </header>
+  <main>
+    <!-- INICIO -->
+    <section class="tab active" id="tab-inicio">
+      <div class="hero">
+        <img src="fotos/estudio-negro-1.jpg" alt="Johanna">
+        <div class="hero-txt"><h2>Reinas en Acción 👑</h2><p>Tu espacio diario para cumplirte</p></div>
+      </div>
+      <div class="frase">
+        <div class="lbl">FRASE DE HOY</div>
+        <p id="fraseHoy"></p>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="n" id="stRacha">0</div><div class="l">días de racha 🔥</div></div>
+        <div class="stat"><div class="n" id="stHabitos">0/0</div><div class="l">hábitos hoy ✅</div></div>
+        <div class="stat"><div class="n" id="stMetas">0</div><div class="l">metas activas 🎯</div></div>
+      </div>
+      <div class="card">
+        <h3>📲 Reporte semanal</h3>
+        <p class="hint">Arma tu resumen y envíaselo a Johanna por WhatsApp con un toque.</p>
+        <button class="btn btn-vino" onclick="sendReport()">Reportar mi semana 💬</button>
+      </div>
+      <div class="card">
+        <h3>✏️ Tu nombre</h3>
+        <input type="text" id="nameInput" placeholder="¿Cómo te llamas, reina?">
+        <button class="btn btn-gold" onclick="saveName()">Guardar</button>
+      </div>
+    </section>
+
+    <!-- CHECKIN -->
+    <section class="tab" id="tab-checkin">
+      <div class="banner"><img src="fotos/estudio-gris-2.jpg" alt=""></div>
+      <div class="card">
+        <h3>💛 ¿Cómo amaneciste hoy, reina?</h3>
+        <div class="moods" id="moods"></div>
+        <textarea id="noteInput" rows="2" placeholder="Una línea para ti (opcional)…"></textarea>
+        <button class="btn btn-gold" onclick="saveCheckin()">Guardar check-in</button>
+      </div>
+      <div class="card">
+        <h3>Tu semana</h3>
+        <div class="hist" id="histWeek"></div>
+      </div>
+    </section>
+
+    <!-- HABITOS -->
+    <section class="tab" id="tab-habitos">
+      <div class="banner"><img src="fotos/johanna-manana.jpg" alt=""></div>
+      <div class="card">
+        <h3>✅ Mis hábitos</h3>
+        <p class="hint">Marca cada día lo que cumpliste. La racha cuenta tus días seguidos.</p>
+        <div id="habitList"></div>
+        <div class="row">
+          <input type="text" id="newHabit" placeholder="Nuevo hábito… ej: Tomar agua 💧" style="margin-bottom:0">
+          <button class="btn btn-vino" onclick="addHabit()" style="width:auto;padding:12px 18px;margin-bottom:0">＋</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- METAS -->
+    <section class="tab" id="tab-metas">
+      <div class="banner"><img src="fotos/estudio-negro-3.jpg" alt=""></div>
+      <div class="card">
+        <h3>🎯 Mis metas</h3>
+        <p class="hint">Escríbelas, ponles fecha y mueve la barra a medida que avances.</p>
+        <div id="metaList"></div>
+        <input type="text" id="newMetaTitle" placeholder="Mi meta… ej: Grabar 10 videos">
+        <input type="date" id="newMetaDate">
+        <button class="btn btn-gold" onclick="addMeta()">Agregar meta</button>
+      </div>
+    </section>
+
+    <!-- RETOS -->
+    <section class="tab" id="tab-retos">
+      <div class="banner"><img src="fotos/comunidad.jpg" alt=""></div>
+      <div class="card" style="background:linear-gradient(135deg,var(--vino2),var(--vino));color:var(--crema);">
+        <h3 style="color:var(--dorado2)">🔥 Retos del Club</h3>
+        <p class="hint" style="color:rgba(246,240,227,.75)">Los retos quincenales viven aquí. Marca cada día que participes.</p>
+      </div>
+      <div id="retoList"></div>
+    </section>
+
+    <!-- PLAYLIST -->
+    <section class="tab" id="tab-playlist">
+      <div class="banner"><img src="fotos/estudio-gris-3.jpg" alt=""></div>
+      <div class="card">
+        <h3>🎶 Mi playlist</h3>
+        <p class="hint">Música con energía femenina para tus mañanas, tu gym y tus momentos reina.</p>
+        <div class="play-wrap" id="playWrap"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav>
+    <button class="on" onclick="go('inicio',this)"><span class="ic">🏠</span>Inicio</button>
+    <button onclick="go('checkin',this)"><span class="ic">💛</span>Check-in</button>
+    <button onclick="go('habitos',this)"><span class="ic">✅</span>Hábitos</button>
+    <button onclick="go('metas',this)"><span class="ic">🎯</span>Metas</button>
+    <button onclick="go('retos',this)"><span class="ic">🔥</span>Retos</button>
+    <button onclick="go('playlist',this)"><span class="ic">🎶</span>Música</button>
+  </nav>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const ACCESS_CODE = "APROBADO";
+const WHATSAPP_NUMBER = "19046293118";
+const PLAYLIST_URL = "https://open.spotify.com/embed/playlist/1mDXHqtmiNiKz9Jjd9uc9f";
+const LS_KEY = "reinas_en_accion_v1";
+
+const PHRASES = [
+"Si yo pude, vos también podéis. 👑",
+"Reina, tu historia es tu poder. Cuéntala.",
+"De nada vale saber crear contenido si tú no te lo crees.",
+"Hoy es un buen día para atreverte.",
+"La disciplina te lleva donde la motivación no alcanza.",
+"No esperes a sentirte lista. Empieza, y la seguridad llega.",
+"Cada promesa que te cumples es un voto por la mujer que quieres ser.",
+"Hecho es mejor que perfecto. Siempre.",
+"Tu constancia de hoy es tu resultado de mañana.",
+"Deja de pedir permiso para brillar.",
+"El miedo es una brújula: si te asusta, por ahí es.",
+"Cuídate como cuidarías a quien más amas.",
+"Pequeños pasos, todos los días. Eso es todo.",
+"No compites con nadie. Ayer ya quedó atrás.",
+"Tu palabra contigo misma es sagrada.",
+"Si hoy avanzaste 1%, ya ganaste.",
+"Las reinas también tienen días grises. Sigue igual.",
+"Cree en ti hasta que lo sientas. Después sigue creyendo.",
+"Nadie va a construir tu camino por ti, reina. Y qué bueno.",
+"Rodéate de mujeres que te recuerden quién eres.",
+"Tu mejor versión se construye en los días normales.",
+"Agradece, respira y sigue.",
+"El «no puedo» de hoy es el «lo logré» de mañana.",
+"Muévete aunque sea poquito. El cuerpo lo agradece.",
+"Eres más fuerte que tus excusas.",
+"Hoy elige una cosa y hazla bien.",
+"Tu futuro te está esperando. No lo hagas esperar.",
+"Descansar también es avanzar.",
+"Háblate como le hablarías a tu mejor amiga.",
+"Conectar, crecer y avanzar juntas. Esas somos nosotras."
+];
+
+const MOODS = [
+  {e:"😍", t:"Radiante"},
+  {e:"😌", t:"Tranquila"},
+  {e:"😢", t:"Bajón"},
+  {e:"😤", t:"Molesta"},
+  {e:"😴", t:"Cansada"}
+];
+
+const DEFAULT_RETOS = [
+  {id:"r1", title:"Créetelo, grábate y cuéntalo", desc:"7 días contando tu historia en video.", totalDays:7, doneDays:[]},
+  {id:"r2", title:"Constancia de contenido", desc:"15 días publicando sin fallar.", totalDays:15, doneDays:[]},
+  {id:"r3", title:"Amor propio diario", desc:"15 días de un acto de amor propio al día.", totalDays:15, doneDays:[]}
+];
+
+/* ================= STATE ================= */
+function blank(){ return {name:"", habits:[], checkins:{}, metas:[], retos:JSON.parse(JSON.stringify(DEFAULT_RETOS))}; }
+let S;
+try{ S = JSON.parse(localStorage.getItem(LS_KEY)) || blank(); }
+catch(e){ S = blank(); }
+if(!S.retos || !S.retos.length) S.retos = JSON.parse(JSON.stringify(DEFAULT_RETOS));
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
+function todayStr(d){
+  d = d || new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function uid(){ return "x"+Date.now().toString(36)+Math.floor(Math.random()*999); }
+
+/* ================= GATE ================= */
+function tryGate(){
+  const v = document.getElementById("gateInput").value.trim().toUpperCase();
+  if(v === ACCESS_CODE){
+    localStorage.setItem("reinas_gate","1");
+    enter();
+  } else {
+    document.getElementById("gateErr").textContent = "Ese código no es válido, reina. Pídelo en la comunidad.";
+  }
+}
+function enter(){
+  document.getElementById("gate").style.display="none";
+  document.getElementById("app").style.display="block";
+  init();
+}
+if(localStorage.getItem("reinas_gate")==="1"){ enter(); }
+
+/* ================= NAV ================= */
+function go(tab, btn){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  window.scrollTo(0,0);
+}
+
+/* ================= INIT ================= */
+function init(){
+  // frase del día
+  const now = new Date();
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(),0,0))/864e5);
+  document.getElementById("fraseHoy").textContent = PHRASES[dayOfYear % PHRASES.length];
+  document.getElementById("helloLine").textContent = S.name ? ("Hola, "+S.name+" 👑") : "Hola, reina 👑";
+  document.getElementById("nameInput").value = S.name || "";
+  renderMoods(); renderHist(); renderHabits(); renderMetas(); renderRetos(); renderPlaylist(); renderStats();
+}
+function saveName(){
+  S.name = document.getElementById("nameInput").value.trim();
+  save();
+  document.getElementById("helloLine").textContent = S.name ? ("Hola, "+S.name+" 👑") : "Hola, reina 👑";
+}
+
+/* ================= STATS ================= */
+function habitStreak(h){
+  let s=0; const d=new Date();
+  if(!h.checks[todayStr(d)]) d.setDate(d.getDate()-1);
+  while(h.checks[todayStr(d)]){ s++; d.setDate(d.getDate()-1); }
+  return s;
+}
+function renderStats(){
+  const t = todayStr();
+  let done=0;
+  let best=0, bestName="";
+  S.habits.forEach(h=>{
+    if(h.checks[t]) done++;
+    const st=habitStreak(h);
+    if(st>best){best=st;bestName=h.name;}
+  });
+  document.getElementById("stRacha").textContent = best;
+  document.getElementById("stHabitos").textContent = done+"/"+S.habits.length;
+  document.getElementById("stMetas").textContent = S.metas.filter(m=>!m.done).length;
+}
+
+/* ================= CHECKIN ================= */
+let selMood = null;
+function renderMoods(){
+  const box=document.getElementById("moods"); box.innerHTML="";
+  const t=todayStr(); const cur=S.checkins[t];
+  if(cur){ selMood=cur.mood; document.getElementById("noteInput").value=cur.note||""; }
+  MOODS.forEach((m,i)=>{
+    const d=document.createElement("div");
+    d.className="mood"+(selMood===i?" sel":"");
+    d.innerHTML='<span class="e">'+m.e+'</span>'+m.t;
+    d.onclick=()=>{ selMood=i; renderMoods(); };
+    box.appendChild(d);
+  });
+}
+function saveCheckin(){
+  if(selMood===null){ alert("Elige cómo amaneciste hoy 💛"); return; }
+  S.checkins[todayStr()]={mood:selMood, note:document.getElementById("noteInput").value.trim()};
+  save(); renderHist();
+  alert("Check-in guardado, reina 💛");
+}
+function renderHist(){
+  const box=document.getElementById("histWeek"); box.innerHTML="";
+  const days=["dom","lun","mar","mié","jue","vie","sáb"];
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const k=todayStr(d); const c=S.checkins[k];
+    const div=document.createElement("div"); div.className="d";
+    div.innerHTML="<b>"+(c?MOODS[c.mood].e:"·")+"</b>"+days[d.getDay()];
+    box.appendChild(div);
+  }
+}
+
+/* ================= HABITS ================= */
+function renderHabits(){
+  const box=document.getElementById("habitList"); box.innerHTML="";
+  const t=todayStr();
+  if(!S.habits.length){ box.innerHTML='<div class="empty">Aún no tienes hábitos.<br>Agrega tu primero aquí abajo 👇</div>'; return; }
+  S.habits.forEach(h=>{
+    const done=!!h.checks[t]; const st=habitStreak(h);
+    const d=document.createElement("div"); d.className="habit";
+    d.innerHTML='<button class="check'+(done?" done":"")+'" onclick="toggleHabit(\''+h.id+'\')">'+(done?"✓":"")+'</button>'+
+      '<div class="info"><b>'+esc(h.name)+'</b><small>'+(done?"¡Cumplido hoy! 🎉":"Tócalo al cumplirlo")+'</small></div>'+
+      (st>1?'<span class="streak">🔥 '+st+'</span>':"")+
+      '<button class="del" onclick="delHabit(\''+h.id+'\')">×</button>';
+    box.appendChild(d);
+  });
+  renderStats();
+}
+function toggleHabit(id){
+  const h=S.habits.find(x=>x.id===id); const t=todayStr();
+  if(h.checks[t]) delete h.checks[t]; else h.checks[t]=true;
+  save(); renderHabits();
+}
+function addHabit(){
+  const v=document.getElementById("newHabit").value.trim();
+  if(!v) return;
+  S.habits.push({id:uid(), name:v, checks:{}});
+  document.getElementById("newHabit").value="";
+  save(); renderHabits();
+}
+function delHabit(id){
+  if(!confirm("¿Eliminar este hábito?")) return;
+  S.habits=S.habits.filter(x=>x.id!==id);
+  save(); renderHabits();
+}
+
+/* ================= METAS ================= */
+function renderMetas(){
+  const box=document.getElementById("metaList"); box.innerHTML="";
+  if(!S.metas.length){ box.innerHTML='<div class="empty">Sin metas todavía.<br>Escribe la primera aquí abajo 🎯</div>'; return; }
+  const sorted=[...S.metas].sort((a,b)=>(a.done?1:0)-(b.done?1:0));
+  sorted.forEach(m=>{
+    const d=document.createElement("div"); d.className="meta"+(m.done?" done":"");
+    d.innerHTML='<b>'+(m.done?"🎉 ":"")+esc(m.title)+'</b>'+
+      (m.date?'<small>📅 Meta: '+m.date+'</small>':"")+
+      '<div class="bar"><i style="width:'+m.progress+'%"></i></div>'+
+      (m.done?"":'<input type="range" min="0" max="100" value="'+m.progress+'" oninput="setProg(\''+m.id+'\',this.value)"><div class="row"><button class="btn btn-gold" style="padding:10px" onclick="doneMeta(\''+m.id+'\')">¡La cumplí! 🎉</button><button class="del" onclick="delMeta(\''+m.id+'\')">eliminar</button></div>');
+    box.appendChild(d);
+  });
+  renderStats();
+}
+function addMeta(){
+  const t=document.getElementById("newMetaTitle").value.trim();
+  if(!t){ alert("Escribe tu meta primero 🎯"); return; }
+  S.metas.push({id:uid(), title:t, date:document.getElementById("newMetaDate").value, progress:0, done:false});
+  document.getElementById("newMetaTitle").value=""; document.getElementById("newMetaDate").value="";
+  save(); renderMetas();
+}
+function setProg(id,v){ const m=S.metas.find(x=>x.id===id); m.progress=+v; save(); renderMetas(); }
+function doneMeta(id){ const m=S.metas.find(x=>x.id===id); m.done=true; m.progress=100; save(); renderMetas(); alert("¡META CUMPLIDA! 🎉 Orgullosa de ti, reina."); }
+function delMeta(id){ if(!confirm("¿Eliminar esta meta?"))return; S.metas=S.metas.filter(x=>x.id!==id); save(); renderMetas(); }
+
+/* ================= RETOS ================= */
+function renderRetos(){
+  const box=document.getElementById("retoList"); box.innerHTML="";
+  const t=todayStr();
+  S.retos.forEach(r=>{
+    const n=r.doneDays.length; const doneToday=r.doneDays.includes(t);
+    const d=document.createElement("div"); d.className="reto";
+    d.innerHTML='<h4>'+esc(r.title)+'</h4><p>'+esc(r.desc)+'</p>'+
+      '<div class="prog">Día '+n+' de '+r.totalDays+'</div>'+
+      '<div class="bar" style="background:rgba(246,240,227,.2)"><i style="width:'+Math.round(n/r.totalDays*100)+'%"></i></div>'+
+      '<button class="btn btn-gold" '+(doneToday?"disabled style='opacity:.5'":"")+' onclick="markReto(\''+r.id+'\')">'+(doneToday?"✓ Día marcado":"Marcar día de hoy")+'</button>';
+    box.appendChild(d);
+  });
+}
+function markReto(id){
+  const r=S.retos.find(x=>x.id===id); const t=todayStr();
+  if(!r.doneDays.includes(t)) r.doneDays.push(t);
+  save(); renderRetos();
+}
+
+/* ================= PLAYLIST ================= */
+function renderPlaylist(){
+  const w=document.getElementById("playWrap");
+  if(!PLAYLIST_URL){ w.innerHTML='<div class="empty" style="color:var(--crema);padding:40px 20px">Pronto: la playlist de las reinas 🎶</div>'; return; }
+  let src=PLAYLIST_URL;
+  if(src.includes("open.spotify.com")){
+    const m=src.match(/open\.spotify\.com\/(playlist|album|track)\/([A-Za-z0-9]+)/);
+    if(m) src="https://open.spotify.com/embed/"+m[1]+"/"+m[2];
+  } else if(src.includes("youtube.com")||src.includes("youtu.be")){
+    const m=src.match(/[?&]list=([A-Za-z0-9_-]+)/);
+    if(m) src="https://www.youtube.com/embed/videoseries?list="+m[1];
+    else { const v=src.match(/youtu\.be\/([A-Za-z0-9_-]+)/)||src.match(/[?&]v=([A-Za-z0-9_-]+)/); if(v) src="https://www.youtube.com/embed/"+v[1]; }
+  }
+  w.innerHTML='<iframe src="'+src+'" allow="encrypted-media; fullscreen" loading="lazy"></iframe>';
+}
+
+/* ================= REPORTE ================= */
+function sendReport(){
+  const name=S.name||"Reina";
+  const t=todayStr();
+  // ánimo semana
+  const moods=[];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const c=S.checkins[todayStr(d)]; if(c) moods.push(MOODS[c.mood].t); }
+  // hábitos semana
+  let checks=0; const weekDays=[];
+  for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); weekDays.push(todayStr(d)); }
+  S.habits.forEach(h=>{ weekDays.forEach(k=>{ if(h.checks[k]) checks++; }); });
+  let best=0,bn=""; S.habits.forEach(h=>{ const s=habitStreak(h); if(s>best){best=s;bn=h.name;} });
+  const metasAct=S.metas.filter(m=>!m.done).map(m=>"• "+m.title+" ("+m.progress+"%)").join("\n")||"—";
+  const metasOk=S.metas.filter(m=>m.done).length;
+  const retos=S.retos.map(r=>"• "+r.title+": día "+r.doneDays.length+"/"+r.totalDays).join("\n");
+
+  let msg="Hola Johanna 👑 Soy "+name+", este es mi reporte semanal de Reinas en Acción 💛\n\n";
+  msg+="💛 Ánimo de la semana: "+(moods.length?moods.join(", "):"sin check-ins")+"\n";
+  msg+="✅ Hábitos: "+checks+" checks esta semana"+(best?". Mejor racha: "+best+" días ("+bn+")":"")+"\n";
+  msg+="🎯 Metas activas:\n"+metasAct+"\n";
+  if(metasOk) msg+="🎉 Metas cumplidas: "+metasOk+"\n";
+  msg+="🔥 Retos:\n"+retos;
+  window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent(msg),"_blank");
+}
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+</script>
+</body>
+</html>
