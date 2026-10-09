@@ -37,6 +37,7 @@ button{font-family:inherit;}
 .btn-vino{background:var(--vino);color:var(--crema);}
 .btn:active{transform:scale(.98);}
 .gate-err{color:#b3261e;font-size:13px;min-height:20px;margin-top:10px;}
+.gate-hint{font-size:12px;color:var(--muted);line-height:1.5;margin:14px 4px 0;text-align:center;}
 
 /* ===== APP ===== */
 header.app-head{padding:26px 20px 10px;text-align:center;}
@@ -136,6 +137,7 @@ nav button.on{color:var(--dorado2);}
     <input id="gateInput" type="text" placeholder="CÓDIGO" autocomplete="off">
     <button class="btn btn-gold" onclick="tryGate()">Entrar</button>
     <div class="gate-err" id="gateErr"></div>
+    <p class="gate-hint">💛 No tienes que descargar nada: esto es una página web. Ábrela desde Safari o Chrome (no desde la vista previa de WhatsApp) y todo lo que escribas se guarda solo.</p>
   </div>
 </div>
 
@@ -158,7 +160,7 @@ nav button.on{color:var(--dorado2);}
       </div>
       <div class="stats">
         <div class="stat"><div class="n" id="stRacha">0</div><div class="l">días de racha 🔥</div></div>
-        <div class="stat"><div class="n" id="stHabitos">0/0</div><div class="l">hábitos hoy ✅</div></div>
+        <div class="stat"><div class="n" id="stHabitos">0/0</div><div class="l">objetivos hoy ✅</div></div>
         <div class="stat"><div class="n" id="stMetas">0</div><div class="l">metas activas 🎯</div></div>
       </div>
       <div class="card">
@@ -188,15 +190,15 @@ nav button.on{color:var(--dorado2);}
       </div>
     </section>
 
-    <!-- HABITOS -->
+    <!-- OBJETIVOS -->
     <section class="tab" id="tab-habitos">
       <div class="banner b-habitos"><img src="fotos/johanna-manana.jpg" alt=""></div>
       <div class="card">
-        <h3>✅ Mis hábitos</h3>
+        <h3>✅ Mis objetivos de hoy</h3>
         <p class="hint">Marca cada día lo que cumpliste. La racha cuenta tus días seguidos.</p>
         <div id="habitList"></div>
         <div class="row">
-          <input type="text" id="newHabit" placeholder="Nuevo hábito… ej: Tomar agua 💧" style="margin-bottom:0">
+          <input type="text" id="newHabit" placeholder="Nuevo objetivo… ej: Tomar agua 💧" style="margin-bottom:0">
           <button class="btn btn-vino" onclick="addHabit()" style="width:auto;padding:12px 18px;margin-bottom:0">＋</button>
         </div>
       </div>
@@ -239,7 +241,7 @@ nav button.on{color:var(--dorado2);}
   <nav>
     <button class="on" onclick="go('inicio',this)"><span class="ic">🏠</span>Inicio</button>
     <button onclick="go('checkin',this)"><span class="ic">💛</span>Check-in</button>
-    <button onclick="go('habitos',this)"><span class="ic">✅</span>Hábitos</button>
+    <button onclick="go('habitos',this)"><span class="ic">✅</span>Objetivos</button>
     <button onclick="go('metas',this)"><span class="ic">🎯</span>Metas</button>
     <button onclick="go('retos',this)"><span class="ic">🔥</span>Retos</button>
     <button onclick="go('playlist',this)"><span class="ic">🎶</span>Música</button>
@@ -412,7 +414,7 @@ function renderHist(){
 function renderHabits(){
   const box=document.getElementById("habitList"); box.innerHTML="";
   const t=todayStr();
-  if(!S.habits.length){ box.innerHTML='<div class="empty">Aún no tienes hábitos.<br>Agrega tu primero aquí abajo 👇</div>'; return; }
+  if(!S.habits.length){ box.innerHTML='<div class="empty">Aún no tienes objetivos.<br>Agrega tu primero aquí abajo 👇</div>'; return; }
   S.habits.forEach(h=>{
     const done=!!h.checks[t]; const st=habitStreak(h);
     const d=document.createElement("div"); d.className="habit";
@@ -437,7 +439,7 @@ function addHabit(){
   save(); renderHabits();
 }
 function delHabit(id){
-  if(!confirm("¿Eliminar este hábito?")) return;
+  if(!confirm("¿Eliminar este objetivo?")) return;
   S.habits=S.habits.filter(x=>x.id!==id);
   save(); renderHabits();
 }
@@ -522,7 +524,7 @@ function sendReport(){
 
   let msg="Hola Johanna 👑 Soy "+name+", este es mi reporte semanal de Reinas en Acción 💛\n\n";
   msg+="💛 Ánimo de la semana: "+(moods.length?moods.join(", "):"sin check-ins")+"\n";
-  msg+="✅ Hábitos: "+checks+" checks esta semana"+(best?". Mejor racha: "+best+" días ("+bn+")":"")+"\n";
+  msg+="✅ Objetivos: "+checks+" checks esta semana"+(best?". Mejor racha: "+best+" días ("+bn+")":"")+"\n";
   msg+="🎯 Metas activas:\n"+metasAct+"\n";
   if(metasOk) msg+="🎉 Metas cumplidas: "+metasOk+"\n";
   msg+="🔥 Retos:\n"+retos;
