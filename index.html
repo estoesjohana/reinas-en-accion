@@ -307,6 +307,17 @@ function blank(){ return {name:"", habits:[], checkins:{}, metas:[], retos:JSON.
 let S;
 try{ S = JSON.parse(localStorage.getItem(LS_KEY)) || blank(); }
 catch(e){ S = blank(); }
+// Normalizar: reparar datos con forma inesperada sin borrar nada válido
+if(!S || typeof S!=="object") S = blank();
+if(!Array.isArray(S.habits)) S.habits = [];
+if(!Array.isArray(S.metas)) S.metas = [];
+if(!S.checkins || typeof S.checkins!=="object") S.checkins = {};
+// check-ins con mood inválido -> se ignoran al pintar (no rompen la carga)
+Object.keys(S.checkins).forEach(k=>{
+  const c=S.checkins[k];
+  if(!c || typeof c.mood!=="number" || c.mood<0 || c.mood>=MOODS.length){ delete S.checkins[k]; }
+});
+if(typeof S.name!=="string") S.name="";
 if(!S.retos || !S.retos.length) S.retos = JSON.parse(JSON.stringify(DEFAULT_RETOS));
 function save(){ localStorage.setItem(LS_KEY, JSON.stringify(S)); }
 function todayStr(d){
@@ -349,7 +360,9 @@ function init(){
   document.getElementById("fraseHoy").textContent = PHRASES[dayOfYear % PHRASES.length];
   document.getElementById("helloLine").textContent = S.name ? ("Hola, "+S.name+" 👑") : "Hola, reina 👑";
   document.getElementById("nameInput").value = S.name || "";
-  renderMoods(); renderHist(); renderHabits(); renderMetas(); renderRetos(); renderPlaylist(); renderStats();
+  ["renderMoods","renderHist","renderHabits","renderMetas","renderRetos","renderPlaylist","renderStats"].forEach(function(f){
+    try{ window[f](); }catch(err){ if(window.console) console.warn("init:"+f, err); }
+  });
 }
 function saveName(){
   S.name = document.getElementById("nameInput").value.trim();
@@ -405,7 +418,8 @@ function renderHist(){
     const d=new Date(); d.setDate(d.getDate()-i);
     const k=todayStr(d); const c=S.checkins[k];
     const div=document.createElement("div"); div.className="d";
-    div.innerHTML="<b>"+(c?MOODS[c.mood].e:"·")+"</b>"+days[d.getDay()];
+    const em=(c && MOODS[c.mood]) ? MOODS[c.mood].e : "·";
+    div.innerHTML="<b>"+em+"</b>"+days[d.getDay()];
     box.appendChild(div);
   }
 }
